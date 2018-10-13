@@ -11,5 +11,10 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player);
 int getCost(int cardNumber);
 int cardEffect(int card, int choice1, int choice2, int choice3, 
 	       struct gameState *state, int handPos, int *bonus);
+int funcAdventurer(int card, struct gameState *state,int currentPlayer,int *temphand,int drawntreasure,int cardDrawn,int z);
+int funcSmithy(int currentPlayer, struct gameState *state, int handPos);
+int funcMine(int j,struct gameState *state,int currentPlayer,int choice1,int choice2, int handPos);
+int funcTribute(struct gameState *state,int *tributeRevealedCards,int nextPlayer, int currentPlayer);
+int funcTreasureMap(int index,struct gameState *state,int currentPlayer,int handPos);
 
 #endif
