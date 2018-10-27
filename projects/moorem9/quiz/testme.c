@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 
-
+//making a change to see if GIT recognizes it.
 //random character generation
 char inputChar()
 {// TODO: rewrite this function
