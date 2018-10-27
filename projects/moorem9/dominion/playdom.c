@@ -20,7 +20,7 @@ int main (int argc, char** argv) {
   int numSmithies = 0;
   int numAdventurers = 0;
 
-  while (!isGameOver(&G)) {
+  while (!isGameOver(&G)) {//updates the players' amount of money in this turns' hand.
     money = 0;
     smithyPos = -1;
     adventurerPos = -1;
@@ -33,7 +33,7 @@ int main (int argc, char** argv) {
     money += 3;
       else if (handCard(i, &G) == smithy)
     smithyPos = i;
-      else if (handCard(i, &G) == adventurer)
+      else if (handCard(i, &G) == adventurer)//finds the adventurer
     adventurerPos = i;
     }
 

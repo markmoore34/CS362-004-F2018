@@ -17,8 +17,8 @@
 
 enum CARD
   {curse = 0,
-   estate,//1
-   duchy,//2
+   estate,
+   duchy,
    province,
 
    copper,

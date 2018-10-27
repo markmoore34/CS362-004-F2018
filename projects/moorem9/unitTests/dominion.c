@@ -17,23 +17,22 @@ struct gameState* newGame() {
   struct gameState* g = malloc(sizeof(struct gameState));
   return g;
 }
-
+/**
 int* kingdomCards(int k1, int k2, int k3, int k4, int k5, int k6, int k7,
-		  int k8, int k9, int k10)
-{
-	  int* k = malloc(10 * sizeof(int));
-	  k[0] = k1;
-	  k[1] = k2;
-	  k[2] = k3;
-	  k[3] = k4;
-	  k[4] = k5;
-	  k[5] = k6;
-	  k[6] = k7;
-	  k[7] = k8;
-	  k[8] = k9;
-	  k[9] = k10;
-	  return k;
-}
+		  int k8, int k9, int k10) {
+  int* k = malloc(10 * sizeof(int));
+  k[0] = k1;
+  k[1] = k2;
+  k[2] = k3;
+  k[3] = k4;
+  k[4] = k5;
+  k[5] = k6;
+  k[6] = k7;
+  k[7] = k8;
+  k[8] = k9;
+  k[9] = k10;
+  return k;
+}*/
 
 int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
 		   struct gameState *state) {
@@ -138,15 +137,15 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
     {
       state->deckCount[i] = 0;
       for (j = 0; j < 3; j++)
-	{
-	  state->deck[i][j] = estate;
-	  state->deckCount[i]++;
-	}
+	  {
+		  state->deck[i][j] = estate;
+		  state->deckCount[i]++;
+	  }
       for (j = 3; j < 10; j++)
-	{
-	  state->deck[i][j] = copper;
-	  state->deckCount[i]++;		
-	}
+	  {
+		  state->deck[i][j] = copper;
+	  	state->deckCount[i]++;
+	  }
     }
 
   //shuffle player decks
@@ -198,21 +197,19 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
 }
 
 int shuffle(int player, struct gameState *state) {
- 
-
-  int newDeck[MAX_DECK];//new deck array
+	
+  int newDeck[MAX_DECK];
   int newDeckPos = 0;
   int card;
   int i;
 
   if (state->deckCount[player] < 1)
     return -1;
-	
-	qsort ((void*)(state->deck[player]), state->deckCount[player], sizeof(int), compare);
-    /* SORT CARDS IN DECK TO ENSURE DETERMINISM! */
+  qsort ((void*)(state->deck[player]), state->deckCount[player], sizeof(int), compare); 
+  /* SORT CARDS IN DECK TO ENSURE DETERMINISM! */
 
   while (state->deckCount[player] > 0) {
-    card = floor(Random() * state->deckCount[player]); a BIG number
+	  card = floor(Random() * state->deckCount[player]);//Random() returns a decimal #
     newDeck[newDeckPos] = state->deck[player][card];
     newDeckPos++;
     for (i = card; i < state->deckCount[player]-1; i++) {
@@ -321,7 +318,7 @@ int supplyCount(int card, struct gameState *state) {
   return state->supplyCount[card];
 }
 
-int fullDeckCount(int player, int card, struct gameState *state) {//this returns only the # of a specific card.
+int fullDeckCount(int player, int card, struct gameState *state) {
   int i;
   int count = 0;
 
@@ -419,10 +416,10 @@ int scoreFor (int player, struct gameState *state) {
   int i;
   int score = 0;
   //score from hand
- for (i = 0; i < state->handCount[player]; i++)
+  for (i = 0; i < state->handCount[player]; i++)
     {
       if (state->hand[player][i] == curse) { score = score - 1; };
-      if (state->hand[player][i] == estate) { score = score + 1; };
+	  if (state->hand[player][i] == estate) { score = score + 1; };
       if (state->hand[player][i] == duchy) { score = score + 3; };
       if (state->hand[player][i] == province) { score = score + 6; };
       if (state->hand[player][i] == great_hall) { score = score + 1; };
@@ -436,19 +433,19 @@ int scoreFor (int player, struct gameState *state) {
       if (state->discard[player][i] == estate) { score = score + 1; };
       if (state->discard[player][i] == duchy) { score = score + 3; };
       if (state->discard[player][i] == province) { score = score + 6; };
-      if (state->discard[player][i] == great_hall) { score = score + 1; };
+	  if (state->discard[player][i] == great_hall) { score = score + 1; };
       if (state->discard[player][i] == gardens) { score = score + ( fullDeckCount(player, 0, state) / 10 ); };
     }
 
   //score from deck
-  for (i = 0; i < state->discardCount[player]; i++)//this is a bug!!! It should use 'state->deck[player]'
+  for (i = 0; i < state->discardCount[player]; i++)
     {
       if (state->deck[player][i] == curse) { score = score - 1; };
       if (state->deck[player][i] == estate) { score = score + 1; };
       if (state->deck[player][i] == duchy) { score = score + 3; };
       if (state->deck[player][i] == province) { score = score + 6; };
       if (state->deck[player][i] == great_hall) { score = score + 1; };
-      if (state->deck[player][i] == gardens) { score = score + ( fullDeckCount(player, 0, state) / 10 ); };
+       if (state->deck[player][i] == gardens) { score = score + ( fullDeckCount(player, 0, state) / 10 ); };
     }
 
   return score;
@@ -465,9 +462,13 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state) {
     {
       //set unused player scores to -9999
       if (i >= state->numPlayers)
-	  	{players[i] = -9999;}
+	{
+	  players[i] = -9999;
+	}
       else
-	  	{players[i] = scoreFor (i, state);}			//call scoreFor()
+	{
+	  players[i] = scoreFor (i, state);
+	}
     }
 
   //find highest score
