@@ -46,9 +46,8 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
   
   //check number of players
   if (numPlayers > MAX_PLAYERS || numPlayers < 2)
-    {
-      return -1;
-    }
+  	{ return -1; }
+
 
   //set number of players
   state->numPlayers = numPlayers;
@@ -58,10 +57,8 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
     {
       for (j = 0; j < 10; j++)
         {
-	  if (j != i && kingdomCards[j] == kingdomCards[i])
-	    {
-	      return -1;
-	    }
+		  if (j != i && kingdomCards[j] == kingdomCards[i])
+			{ return -1; }
         }
     }
 
@@ -152,9 +149,7 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
   for (i = 0; i < numPlayers; i++)
     {
       if ( shuffle(i, state) < 0 )
-	{
-	  return -1;
-	}
+	  	{ return -1; }
     }
 
   //draw player hands
@@ -227,43 +222,34 @@ int shuffle(int player, struct gameState *state) {
 }
 
 int playCard(int handPos, int choice1, int choice2, int choice3, struct gameState *state) 
-{	
+{	//playcard is called from line 43 of playdom.c
   int card;
-  int coin_bonus = 0; 		//tracks coins gain from actions
+  int coin_bonus = 0; 		//tracks coins gained from actions
 
   //check if it is the right phase
-  if (state->phase != 0)
-    {
-      return -1;
-    }
+  if (state->phase != 0)//I guess other functions change the phase so the player does NOT playcard() if phase is not 0.
+    { return -1; }
 	
   //check if player has enough actions
   if ( state->numActions < 1 )
-    {
-      return -1;
-    }
+    { return -1; }
 	
   //get card played
   card = handCard(handPos, state);
 	
   //check if selected card is an action
   if ( card < adventurer || card > treasure_map )
-    {
-      return -1;
-    }
-	
+  	{ return -1; }
+
   //play card
   if ( cardEffect(card, choice1, choice2, choice3, state, handPos, &coin_bonus) < 0 )
-    {
-      return -1;
-    }
-	
+  	{ return -1; }
+
   //reduce number of actions
   state->numActions--;
 
   //update coins (Treasure cards may be added with card draws)
   updateCoins(state->whoseTurn, state, coin_bonus);
-	
   return 0;
 }
 
@@ -555,7 +541,7 @@ int drawCard(int player, struct gameState *state)
     deckCounter = state->deckCount[player];//Create a holder for the deck count
 
     if (deckCounter == 0)
-      return -1;
+	{ return -1; }
 
     state->hand[player][count] = state->deck[player][deckCounter - 1];//Add card to hand
     state->deckCount[player]--;
@@ -749,27 +735,24 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 			
     case gardens:
-      return -1;
-			
+		{ return -1; }
+
 	case mine:
 	  return funcMine(j,state,currentPlayer,choice1,choice2,handPos);//from line#1369
 /***
       j = state->hand[currentPlayer][choice1];  //store card we will trash
 
       if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
-	{
-	  return -1;
-	}
+ 		{ return -1; }
+
 		
       if (choice2 > treasure_map || choice2 < curse)
-	{
-	  return -1;
-	}
+ 		{ return -1; }
+
 
       if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
-	{
-	  return -1;
-	}
+ 		{ return -1; }
+
 
       gainCard(choice2, state, 2, currentPlayer);
 
@@ -1197,9 +1180,8 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
 	
   //check if supply pile is empty (0) or card is not used in game (-1)
   if ( supplyCount(supplyPos, state) < 1 )
-    {
-      return -1;
-    }
+  	{ return -1; }
+
 	
   //added card for [whoseTurn] current player:
   // toFlag = 0 : add to discard
@@ -1299,19 +1281,15 @@ int funcMine(int j,struct gameState *state,int currentPlayer,int choice1,int cho
 	 j = state->hand[currentPlayer][choice1];  //store card we will trash
 
 	 if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
-		 {
-		 return -1;
-		 }
+	 	{ return -1; }
+
 
 	 if (choice2 > treasure_map || choice2 < curse)
-		 {
-		 return -1;
-		 }
+	 	{ return -1; }
+
 
 	 if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
-		 {
-		 return -1;
-		 }
+	 	{ return -1; }
 
 	 gainCard(choice2, state, 2, currentPlayer);
 

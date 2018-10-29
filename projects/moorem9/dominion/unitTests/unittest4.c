@@ -17,7 +17,7 @@ int main () {
 
 	printf("\n\t\tTesting numHandCards().\n");
 	int i = numHandCards(&G);
-	printf("the number of scards at the beginning of the game is - %d\n", i);
+	printf("the number of cards at the beginning of the game is - %d\n", i);
 	printf("Manually changing handcount of P1 to 20\n");
 	G.handCount[0] = 20;
 	printf("The function numHandCards() now returns %d\n", numHandCards(&G));

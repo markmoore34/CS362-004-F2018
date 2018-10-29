@@ -25,7 +25,7 @@ enum CARD
    silver,
    gold,
 
-   adventurer,
+	  adventurer,		//#7
    /* If no/only 1 treasure found, stop when full deck seen */
    council_room,
    feast, /* choice1 is supply # of card gained) */
@@ -59,18 +59,18 @@ struct gameState {
   int outpostPlayed;
   int outpostTurn;
   int whoseTurn;
-  int phase;
+  int phase;//what is this??????
   int numActions; /* Starts at 1 each turn */
   int coins; /* Use as you see fit! */
   int numBuys; /* Starts at 1 each turn */
-  int hand[MAX_PLAYERS][MAX_HAND];
-  int handCount[MAX_PLAYERS];
-  int deck[MAX_PLAYERS][MAX_DECK];
-  int deckCount[MAX_PLAYERS];
-  int discard[MAX_PLAYERS][MAX_DECK];
-  int discardCount[MAX_PLAYERS];
-  int playedCards[MAX_DECK];
-  int playedCardCount;
+  int hand[MAX_PLAYERS][MAX_HAND];//what cards are in the players hand
+  int handCount[MAX_PLAYERS];//how many cards are in the players hand
+  int deck[MAX_PLAYERS][MAX_DECK];//what cards are in each players deck
+  int deckCount[MAX_PLAYERS];//how many cards are in each players deck
+  int discard[MAX_PLAYERS][MAX_DECK];//the cards in a players discard pile
+  int discardCount[MAX_PLAYERS];//how many cards are in the discard pile
+  int playedCards[MAX_DECK];//cards played on a hand
+  int playedCardCount;//how may cards played on a hand
 };
 
 /* All functions return -1 on failure, and DO NOT CHANGE GAME STATE;
