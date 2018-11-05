@@ -1,5 +1,5 @@
 /*
- * cardtest1.c - this will check if funcSmithy() functions as expected.
+ * randomCardTest1.c - this will check if funcSmithy() functions as expected.
  */
 
 #include "dominion_helpers.h"
@@ -15,10 +15,14 @@ int main () {
 	
 	//printf ("Starting game.\n");
 	initializeGame(2, k, 10, &G);
-	
 	printf("\n\t\tTesting Smithy card().\n");
 	
 	//bug is to send hand position (not player#) into drawcard
+	//make a random number genrerator to input numbers 0 to 10
+	//make sure it doesn't seg fault with assert comments in the function??
+	
+	
+	
 	printf("In Smithy() there is a bug that sends the hand position instead of player number to the drawcard function.\n");
 	printf("calling funcSmithy 4 times. Changing hand position each time.\nExpect a seg fault after hand position 1\n");
 	printf("funcSmithy(0,&G, 0).\n");
@@ -30,7 +34,6 @@ int main () {
 	printf("funcSmithy(0,&G, 3).\n");
 	//funcSmithy(0,&G, 3);
 	printf("All tests with 0 or 1 card position successfull.\n");
-
 
 	/**
 	int i = numHandCards(&G);
