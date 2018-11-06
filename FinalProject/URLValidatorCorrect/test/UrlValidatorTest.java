@@ -25,21 +25,21 @@ import junit.framework.TestCase;
 public class UrlValidatorTest extends TestCase {
 
    private final boolean printStatus = false;
-   private final boolean printIndex = false;//print index that indicates current scheme,host,port,path, query test were using.
+   private final boolean printIndex = false;//print index that indicates current scheme,host,port,path, query test we're using.
 
    public UrlValidatorTest(String testName) {
       super(testName);
    }
 
-   @Override
-protected void setUp() {
+   @Override				//WHAT IS THIS???
+   protected void setUp() {
       for (int index = 0; index < testPartsIndex.length - 1; index++) {
          testPartsIndex[index] = 0;
       }
    }
 
-   public void testIsValid() {
-        testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);
+   public void testIsValid() {//accepts no parameters, but calls the other testIsValid which accepts 2 parameters.
+        testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);//testUrlParts if the array of al the arrays of parts
         setUp();
 //        int options =
 //            UrlValidator.ALLOW_2_SLASHES
@@ -80,51 +80,57 @@ protected void setUp() {
     *
     * @param testObjects Used to create a url.
     */
-   public void testIsValid(Object[] testObjects, long allowAllSchemes) {
-	      UrlValidator urlVal = new UrlValidator(null, null, allowAllSchemes);
+	public void testIsValid(Object[] testObjects, long allowAllSchemes)//called by testIsValid which has no params. testObjects and testPartsIndex coincide. testPartsIndex gives the # of the object within testObjects[] to grab.
+	{
+	      UrlValidator urlVal = new UrlValidator(null, null, allowAllSchemes);//create Urlvalidator object
 	      //UrlValidator urlVal = new UrlValidator(null, allowAllSchemes);
-      assertTrue(urlVal.isValid("http://www.google.com"));
+      assertTrue(urlVal.isValid("http://www.google.com"));//check that this url is valid
       assertTrue(urlVal.isValid("http://www.google.com/"));
-      int statusPerLine = 60;
+      int statusPerLine = 60;//60 status's per inquiry?
       int printed = 0;
-      if (printIndex)  {
+      if (printIndex)  {//this is set as false on line 28 but isn't changed anywhere else?
          statusPerLine = 6;
       }
       do {
-          StringBuilder testBuffer = new StringBuilder();
+          StringBuilder testBuffer = new StringBuilder();//this must be from the "junit" import on line 18. builds the string?
          boolean expected = true;
-         for (int testPartsIndexIndex = 0; testPartsIndexIndex < testPartsIndex.length; ++testPartsIndexIndex) {
-            int index = testPartsIndex[testPartsIndexIndex];
-            ResultPair[] part = (ResultPair[]) testObjects[testPartsIndexIndex];
-            testBuffer.append(part[index].item);
-            expected &= part[index].valid;
+         for (int testPartsIndexIndex = 0; testPartsIndexIndex < testPartsIndex.length; ++testPartsIndexIndex) {//test parts index is a 5 element array that holds the elementst to grab from the 5 URL parts arrays. testPartsIndex.length = 5(line 276)
+			 int index = testPartsIndex[testPartsIndexIndex]; //put that # into index;
+            ResultPair[] part = (ResultPair[]) testObjects[testPartsIndexIndex];//grab the obj in that index of the testObjects[] parameter. it's typdef'd
+			 testBuffer.append(part[index].item);//append that url part into the "testBuffer" string
+			 expected &= part[index].valid;/**a &= b; is equivalent to a = a & b; In some usages, the type-casting makes
+											a difference to the result, but in this one b has to be boolean and the
+											type-cast does nothing.
+											"valid" is the true or false. If the part is not valid,
+											expected is set to false.
+											**/
          }
-         String url = testBuffer.toString();
-         boolean result = urlVal.isValid(url);
+         String url = testBuffer.toString();//convert the "testbuffer" to a string called "url"
+         boolean result = urlVal.isValid(url);//check that if the url is valid
          if(result == true)
-        	 System.out.println(url);
-         assertEquals(url, expected, result);
-         if (printStatus) {
-            if (printIndex) {
-               System.out.print(testPartsIndextoString());
+        	 System.out.println(url);//if it's a good url, print it.
+         assertEquals(url, expected, result);//check that the 3? things are boolean equal?
+         if (printStatus) {//this is set as false on line 27 but isn't changed anywhere else?
+            if (printIndex) {//this is set as false on line 28 but isn't changed anywhere else?
+				System.out.print(testPartsIndextoString());//convert the index# to a string and print it.
             } else {
-               if (result == expected) {
-                  System.out.print('.');
+               if (result == expected) {//another check of result and expected.
+                  System.out.print('.');//if the result == true(expected from line 96)
                } else {
                   System.out.print('X');
                }
             }
-            printed++;
-            if (printed == statusPerLine) {
-               System.out.println();
-               printed = 0;
+            printed++;//another valid url has been printed.
+            if (printed == statusPerLine) {//status per line is 60(set on line 89)
+               System.out.println();//prints to the console?
+               printed = 0;//reset to 0 and start again.
             }
          }
-      } while (incrementTestPartsIndex(testPartsIndex, testObjects));
+      } while (incrementTestPartsIndex(testPartsIndex, testObjects));//there are still options to try.
       if (printStatus) {
          System.out.println();
       }
-   }
+   }//end of testIsValid
 
    public void testValidator202() {
        String[] schemes = {"http","https"};
@@ -142,22 +148,20 @@ protected void setUp() {
       boolean carry = true;  //add 1 to lowest order part.
       boolean maxIndex = true;
       for (int testPartsIndexIndex = testPartsIndex.length - 1; testPartsIndexIndex >= 0; --testPartsIndexIndex) {
-         int index = testPartsIndex[testPartsIndexIndex];
-         ResultPair[] part = (ResultPair[]) testParts[testPartsIndexIndex];
+         int index = testPartsIndex[testPartsIndexIndex];//goes over each element in testPartsIndex to increment it, starting with the last one(4).
+         ResultPair[] part = (ResultPair[]) testParts[testPartsIndexIndex];//get the part obj and put into part
          if (carry) {
-            if (index < part.length - 1) {
-               index++;
-               testPartsIndex[testPartsIndexIndex] = index;
+			 if (index < part.length - 1) {//if index is less than the length of the obj part[] from obj testParts[]
+               index++;//increment index
+				 testPartsIndex[testPartsIndexIndex] = index;//make the index # one more
                carry = false;
             } else {
                testPartsIndex[testPartsIndexIndex] = 0;
                carry = true;
             }
          }
-         maxIndex &= (index == (part.length - 1));
+         maxIndex &= (index == (part.length - 1));//both must be true/false.
       }
-
-
       return (!maxIndex);
    }
 
@@ -270,7 +274,7 @@ protected void setUp() {
                               new ResultPair("", true)
    };
 
-   Object[] testUrlParts = {testUrlScheme, testUrlAuthority, testUrlPort, testPath, testUrlQuery};
+   Object[] testUrlParts = {testUrlScheme, testUrlAuthority, testUrlPort, testPath, testUrlQuery};//an array of arrays(which start on line 203
    Object[] testUrlPartsOptions = {testUrlScheme, testUrlAuthority, testUrlPort, testUrlPathOptions, testUrlQuery};
    int[] testPartsIndex = {0, 0, 0, 0, 0};
 
