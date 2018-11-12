@@ -514,7 +514,8 @@ int drawCard(int player, struct gameState *state)
     //Step 1 Shuffle the discard pile back into a deck
     int i;
     //Move discard to deck
-    for (i = 0; i < state->discardCount[player];i++){
+    for (i = 0; i < state->discardCount[player];i++)
+	{
       state->deck[player][i] = state->discard[player][i];
       state->discard[player][i] = -1;
     }
@@ -1268,6 +1269,7 @@ int funcSmithy(int currentPlayer, struct gameState *state, int handPos)//from li
 	//+3 Cards
 	for (int i = 0; i < 3; i++)
 	{
+		printf("in funcSmithy");
 		drawCard(handPos, state);//"currentPlayer" to "handPos" create bug HW2
 	}
 
