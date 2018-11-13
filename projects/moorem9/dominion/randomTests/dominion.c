@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <assert.h>
+
 
 int compare(const void* a, const void* b) {
   if (*(int*)a > *(int*)b)
@@ -191,9 +193,8 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
   return 0;
 }
 
-int shuffle(int player, struct gameState *state) {
- 
-
+int shuffle(int player, struct gameState *state)
+{
   int newDeck[MAX_DECK];
   int newDeckPos = 0;
   int card;
@@ -507,46 +508,54 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state) {
 }
 
 int drawCard(int player, struct gameState *state)
-{	int count;
-  int deckCounter;
-  if (state->deckCount[player] <= 0){//Deck is empty
-    
-    //Step 1 Shuffle the discard pile back into a deck
-    int i;
-    //Move discard to deck
-    for (i = 0; i < state->discardCount[player];i++)
+{
+	int count;
+  	int deckCounter;
+	
+	if(player != 3 && player != 2 && player != 1 && player != 0)// to make sure the player number is within range.
 	{
-      state->deck[player][i] = state->discard[player][i];
-      state->discard[player][i] = -1;
-    }
+		printf("FAILED - Player should be 0, 1, 2, or 3. It is %d in drawcard().\n", player);
+		return 0;
+	}
+	
+	if (state->deckCount[player] <= 0)
+	{//Deck is empty
+		//Step 1 Shuffle the discard pile back into a deck
+		int i;
+		for (i = 0; i < state->discardCount[player];i++)//what happens if the discard count is 0?
+		{//Move discard to deck
+		  state->deck[player][i] = state->discard[player][i];
+		  state->discard[player][i] = -1;
+		}
 
-    state->deckCount[player] = state->discardCount[player];
-    state->discardCount[player] = 0;//Reset discard
+		state->deckCount[player] = state->discardCount[player];//what happens if the discard count is 0?
+		state->discardCount[player] = 0;//Reset discard
 
-    //Shufffle the deck
-    shuffle(player, state);//Shuffle the deck up and make it so that we can draw
-   
-    if (DEBUG){//Debug statements
-      printf("Deck count now: %d\n", state->deckCount[player]);
-    }
-    
-    state->discardCount[player] = 0;
+		//Shufffle the deck
+		int a = shuffle(player, state);//Shuffle the deck up and make it so that we can draw
+		
+		if(a==-1){ printf("ERROR in shuffle() - returned -1. The player has no cards to draw\n "); return -1; }
+		//this added to stop the program when the player runs out of cards.
+		
+		if (DEBUG){//Debug statements
+		  printf("Deck count now: %d\n", state->deckCount[player]);  }
+		
+		state->discardCount[player] = 0;
 
-    //Step 2 Draw Card
-    count = state->handCount[player];//Get current player's hand count
-    
-    if (DEBUG){//Debug statements
-      printf("Current hand count: %d\n", count);
-    }
-    
-    deckCounter = state->deckCount[player];//Create a holder for the deck count
+		//Step 2 Draw Card
+		count = state->handCount[player];//Get current player's hand count
+		
+		if (DEBUG){//Debug statements
+		  printf("Current hand count: %d\n", count);}
+		
+		deckCounter = state->deckCount[player];//Create a holder for the deck count
 
-    if (deckCounter == 0)
-	{ return -1; }
+		if (deckCounter == 0)
+			{ return -1; }
 
-    state->hand[player][count] = state->deck[player][deckCounter - 1];//Add card to hand
-    state->deckCount[player]--;
-    state->handCount[player]++;//Increment hand count
+		state->hand[player][count] = state->deck[player][deckCounter - 1];//Add card to hand
+		state->deckCount[player]--;
+		state->handCount[player]++;//Increment hand count
   }
 
   else{
@@ -1083,7 +1092,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       state->numBuys++;
       if (choice1)
 		{//gain coins equal to trashed card
-		  state->coins = state->coins + getCost( handCard(choice1, state) );
+		  state->coins = state->coins + getCost(handCard(choice1, state));
 		  //trash card
 		  discardCard(choice1, currentPlayer, state, 1);
 		}
@@ -1108,33 +1117,22 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 /***
       //search hand for another treasure_map
       index = -1;
-      for (i = 0; i < state->handCount[currentPlayer]; i++)
-	{
-	  if (state->hand[currentPlayer][i] == treasure_map && i != handPos)
-	    {
-	      index = i;
-	      break;
-	    }
-	}
+      for (i = 0; i < state->handCount[currentPlayer]; i++){
+		  if (state->hand[currentPlayer][i] == treasure_map && i != handPos)
+			{index = i;
+			  break;}
+ 		}
       if (index > -1)
-	{
-	  //trash both treasure cards
-	  discardCard(handPos, currentPlayer, state, 1);
-	  discardCard(index, currentPlayer, state, 1);
+ 		{//trash both treasure cards
+		  discardCard(handPos, currentPlayer, state, 1);
+		  discardCard(index, currentPlayer, state, 1);
 
-	  //gain 4 Gold cards
-	  for (i = 0; i < 4; i++)
-	    {
-	      gainCard(gold, state, 1, currentPlayer);
-	    }
-	  //return success
-	  return 1;
-	}
-			
-      //no second treasure_map found in hand
-      return -1;
-    }
- ***/
+		  for (i = 0; i < 4; i++)//gain 4 Gold cards
+			{ gainCard(gold, state, 1, currentPlayer); }
+		  return 1;//return success
+ 		}
+      return -1;//no second treasure_map found in hand
+    }***/
 	}//end of switch statement??????
   return -1;
 }//end of cardEffect
@@ -1143,30 +1141,25 @@ int discardCard(int handPos, int currentPlayer, struct gameState *state, int tra
 {
   //if card is not trashed, added to Played pile 
   if (trashFlag < 1)
-    {
-      //add card to played pile
+    {//add card to played pile
       state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos]; 
       state->playedCardCount++;
     }
 	
-  //set played card to -1
-  state->hand[currentPlayer][handPos] = -1;
+  state->hand[currentPlayer][handPos] = -1;//set played card to -1
 	
   //remove card from player's hand
   if ( handPos == (state->handCount[currentPlayer] - 1) ) 	//last card in hand array is played
-    {
-      //reduce number of cards in hand
+    {//reduce number of cards in hand
       state->handCount[currentPlayer]--;
     }
   else if ( state->handCount[currentPlayer] == 1 ) //only one card in hand
-    {
-      //reduce number of cards in hand
+    {//reduce number of cards in hand
       state->handCount[currentPlayer]--;
     }
-  else 	
-    {
+  else 	{
       //replace discarded card with last card in hand
-      state->hand[currentPlayer][handPos] = state->hand[currentPlayer][ (state->handCount[currentPlayer] - 1)];
+      state->hand[currentPlayer][handPos] = state->hand[currentPlayer][(state->handCount[currentPlayer] - 1)];
       //set last card to -1
       state->hand[currentPlayer][state->handCount[currentPlayer] - 1] = -1;
       //reduce number of cards in hand
@@ -1183,7 +1176,6 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
   if ( supplyCount(supplyPos, state) < 1 )
   	{ return -1; }
 
-	
   //added card for [whoseTurn] current player:
   // toFlag = 0 : add to discard
   // toFlag = 1 : add to deck
@@ -1205,9 +1197,7 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
       state->discardCount[player]++;
     }
 	
-  //decrease number in supply pile
-  state->supplyCount[supplyPos]--;
-	 
+  state->supplyCount[supplyPos]--;//decrease number in supply pile
   return 0;
 }
 
@@ -1243,14 +1233,22 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 int funcAdventurer(int card, struct gameState *state,int currentPlayer,int *temphand,int drawntreasure,int cardDrawn,int z)//from line#646
 {
-	while(drawntreasure>2){//"<" to ">" to create bug HW2
-		if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-			shuffle(currentPlayer, state);
+	while(drawntreasure>2){//"<" to ">" to create bug HW2 - this won't excecute if 'drawntreasure' is less than 2. If it does start, it will enter an infinite loop.
+		if (state->deckCount[currentPlayer]<1){//if the deck is empty we need to shuffle discard and add to deck
+			int a = shuffle(currentPlayer, state);
+			if(a==-1){ printf("ERROR in shuffle() - returned -1. The player has no cards to draw.\n"); return -1; }
+
+			printf("\t\tshuffled the deck\n");
+			if(drawntreasure>100){//this player has drawn more than 100 cards.
+				printf("this player has drawn more than 100 cards. INFINITE LOOP.\n");
+				return -1;
+			}
 		}
 		drawCard(currentPlayer, state);
 		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+		printf("\tplayer %d's handsize - %d\n\tcard Drawn = %d(4, 5, 6 are treasures.)\n",currentPlayer,state->handCount[currentPlayer], cardDrawn);//use this to check how this function works.
 		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-			drawntreasure++;
+			drawntreasure++;//Lets see what happens if all the cards in the players deck are drawn.
 		else{
 			temphand[z]=cardDrawn;
 			state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
@@ -1269,7 +1267,7 @@ int funcSmithy(int currentPlayer, struct gameState *state, int handPos)//from li
 	//+3 Cards
 	for (int i = 0; i < 3; i++)
 	{
-		printf("in funcSmithy");
+		//printf("in funcSmithy");
 		drawCard(handPos, state);//"currentPlayer" to "handPos" create bug HW2
 	}
 
@@ -1378,7 +1376,7 @@ int funcTreasureMap(int index,struct gameState *state,int currentPlayer,int hand
 		 if (state->hand[currentPlayer][i] == treasure_map && i != handPos)
 		 {
 			 index = i;
-			 //break;//commented out "break;" to create bug HW2
+			 //break;			//commented out "break;" to create bug HW2
 		 }
 	 }
 	 if (index > -1)
@@ -1388,15 +1386,11 @@ int funcTreasureMap(int index,struct gameState *state,int currentPlayer,int hand
 	 
 		 //gain 4 Gold cards
 		 for (int i = 0; i < 4; i++)
-		 {
-			 gainCard(gold, state, 1, currentPlayer);
-		 }
+		 	{  gainCard(gold, state, 1, currentPlayer);  }
 		 //return success
 		 return 1;
 	 }
 	 //no second treasure_map found in hand
 	 return -1;
 	 }
-
-
 //end of dominion.c
