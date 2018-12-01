@@ -39,7 +39,7 @@ public class UrlValidatorTest extends TestCase {
    }
 
    public void testIsValid() {//accepts no parameters, but calls the other testIsValid which accepts 2 parameters.
-        testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);//testUrlParts if the array of al the arrays of parts
+        testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);//testUrlParts if the array of all the arrays of parts
         setUp();
 //        int options =
 //            UrlValidator.ALLOW_2_SLASHES
@@ -77,7 +77,6 @@ public class UrlValidatorTest extends TestCase {
    /**
     * Create set of tests by taking the testUrlXXX arrays and
     * running through all possible permutations of their combinations.
-    *
     * @param testObjects Used to create a url.
     */
 	public void testIsValid(Object[] testObjects, long allowAllSchemes)//called by testIsValid which has no params. testObjects and testPartsIndex coincide. testPartsIndex gives the # of the object within testObjects[] to grab.
@@ -94,9 +93,10 @@ public class UrlValidatorTest extends TestCase {
       do {
           StringBuilder testBuffer = new StringBuilder();//this must be from the "junit" import on line 18. builds the string?
          boolean expected = true;
-         for (int testPartsIndexIndex = 0; testPartsIndexIndex < testPartsIndex.length; ++testPartsIndexIndex) {//test parts index is a 5 element array that holds the elementst to grab from the 5 URL parts arrays. testPartsIndex.length = 5(line 276)
+         for (int testPartsIndexIndex = 0; testPartsIndexIndex < testPartsIndex.length; ++testPartsIndexIndex) {//test parts index is a 5 element array that holds the elements to grab from the 5 URL parts arrays. testPartsIndex.length = 5(line 276)
 			 int index = testPartsIndex[testPartsIndexIndex]; //put that # into index;
-            ResultPair[] part = (ResultPair[]) testObjects[testPartsIndexIndex];//grab the obj in that index of the testObjects[] parameter. it's typdef'd
+            ResultPair[] part = (ResultPair[]) testObjects[testPartsIndexIndex];//grab the obj in that index of the testObjects[] parameter. it's typdef'd. 
+            		//part is an object array - 'testObjects'  is actually the 'testURLParts' array below.
 			 testBuffer.append(part[index].item);//append that url part into the "testBuffer" string
 			 expected &= part[index].valid;/**a &= b; is equivalent to a = a & b; In some usages, the type-casting makes
 											a difference to the result, but in this one b has to be boolean and the
@@ -115,7 +115,7 @@ public class UrlValidatorTest extends TestCase {
 				System.out.print(testPartsIndextoString());//convert the index# to a string and print it.
             } else {
                if (result == expected) {//another check of result and expected.
-                  System.out.print('.');//if the result == true(expected from line 96)
+                  System.out.print('.');//if the result == true(expected from line 95)
                } else {
                   System.out.print('X');
                }
